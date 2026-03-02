@@ -296,10 +296,10 @@ ts$dump(file = ts_file)
 # ts2.dump("insert_ts_file_path_here")
 # ... and to bring it back to R, use ...
 ts2 <- ts_load(ts_file)
-ts$num_individuals() # 2 (if you have run the above Python code)
+ts2$num_individuals() # 2 (if you have run the above Python code)
 file.remove(ts_file)
 
-# You can work similarly with table collection between R & Python
+# Analogous to the above, you can also use reticulate to work on a table collection
 tc <- ts$dump_tables()
 if (check_tskit_py(tskit)) {
   tc_py <- tc$r_to_py()
@@ -343,8 +343,8 @@ ts <- ts_load(ts_file)
 # (on the pointer)
 ts_num_individuals2(ts$xptr)
 
-# An identical RcppTskit implementation
-# (available as the method of the TreeSequence class)
+# The above is identical to the RcppTskit implementation
+# (available as a method of the TreeSequence class)
 ts$num_individuals()
 ```
 
