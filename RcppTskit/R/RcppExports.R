@@ -207,6 +207,14 @@ rtsk_individual_table_add_row <- function(tc, flags = 0L, location = NULL, paren
     .Call(`_RcppTskit_rtsk_individual_table_add_row`, tc, flags, location, parents, metadata)
 }
 
+rtsk_site_table_add_row <- function(tc, position = 0.0, ancestral_state = NULL, metadata = NULL) {
+    .Call(`_RcppTskit_rtsk_site_table_add_row`, tc, position, ancestral_state, metadata)
+}
+
+rtsk_mutation_table_add_row <- function(tc, site = 0L, node = 0L, parent = -1L, time = 0.0, derived_state = NULL, metadata = NULL) {
+    .Call(`_RcppTskit_rtsk_mutation_table_add_row`, tc, site, node, parent, time, derived_state, metadata)
+}
+
 test_tsk_bug_assert_c <- function() {
     invisible(.Call(`_RcppTskit_test_tsk_bug_assert_c`))
 }

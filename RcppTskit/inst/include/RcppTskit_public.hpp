@@ -63,4 +63,14 @@ int rtsk_individual_table_add_row(
     Rcpp::Nullable<Rcpp::IntegerVector> parents = R_NilValue,
     Rcpp::Nullable<Rcpp::RawVector> metadata = R_NilValue);
 
+int rtsk_site_table_add_row(
+    SEXP tc, double position = 0.0,
+    Rcpp::Nullable<Rcpp::RawVector> ancestral_state = R_NilValue,
+    Rcpp::Nullable<Rcpp::RawVector> metadata = R_NilValue);
+
+int rtsk_mutation_table_add_row(
+    SEXP tc, int site = 0, int node = 0, int parent = -1, double time = 0.0,
+    Rcpp::Nullable<Rcpp::RawVector> derived_state = R_NilValue,
+    Rcpp::Nullable<Rcpp::RawVector> metadata = R_NilValue);
+
 #endif

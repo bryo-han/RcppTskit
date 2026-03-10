@@ -1332,3 +1332,117 @@ int rtsk_individual_table_add_row(
   }
   return static_cast<int>(row_id);
 }
+// PUBLIC, wrapper for tsk_site_table_add_row
+// @title Add a row to the sites table in a table collection
+// @param tc an external pointer to table collection as a
+//   \code{tsk_table_collection_t} object.
+// @param position numeric coordinate for the new site.
+// @param ancestral_state raw vector with ancestral state bytes
+//   (can be \code{NULL}).
+// @param metadata raw vector with metadata bytes
+//   (can be \code{NULL}).
+// @details This function calls
+//   \url{https://tskit.dev/tskit/docs/stable/c-api.html#c.tsk_site_table_add_row}
+//   on the sites table of \code{tc}.
+// @return The 0-based row ID of the newly added site.
+// @examples
+// ts_file <- system.file("examples/test.trees", package = "RcppTskit")
+// tc_xptr <- RcppTskit:::rtsk_table_collection_load(ts_file)
+// n_before <- RcppTskit:::rtsk_table_collection_get_num_sites(tc_xptr)
+// new_id <- RcppTskit:::rtsk_site_table_add_row(tc = tc_xptr,
+//   position = 1.0, ancestral_state = charToRaw("A"))
+// n_after <- RcppTskit:::rtsk_table_collection_get_num_sites(tc_xptr)
+// new_id == as.integer(n_before) && n_after == n_before + 1L
+// [[Rcpp::export]]
+int rtsk_site_table_add_row(
+    const SEXP tc, const double position = 0.0,
+    const Rcpp::Nullable<Rcpp::RawVector> ancestral_state = R_NilValue,
+    const Rcpp::Nullable<Rcpp::RawVector> metadata = R_NilValue) {
+  rtsk_table_collection_t tc_xptr(tc);
+
+  const Rcpp::RawVector ancestral_vec =
+      nullable_to_vector_or_empty<Rcpp::RawVector>(ancestral_state);
+  const tsk_size_t ancestral_length =
+      static_cast<tsk_size_t>(ancestral_vec.size());
+  const char *ancestral_ptr =
+      ancestral_length > 0 ? reinterpret_cast<const char *>(RAW(ancestral_vec))
+                           : nullptr;
+
+  const Rcpp::RawVector metadata_vec =
+      nullable_to_vector_or_empty<Rcpp::RawVector>(metadata);
+  const tsk_size_t metadata_length =
+      static_cast<tsk_size_t>(metadata_vec.size());
+  const char *metadata_ptr =
+      metadata_length > 0 ? reinterpret_cast<const char *>(RAW(metadata_vec))
+                          : nullptr;
+
+  const tsk_id_t row_id =
+      tsk_site_table_add_row(&tc_xptr->sites, position, ancestral_ptr,
+                             ancestral_length, metadata_ptr, metadata_length);
+  if (row_id < 0) {
+    Rcpp::stop(tsk_strerror(row_id));
+  }
+  return static_cast<int>(row_id);
+}
+// PUBLIC, wrapper for tsk_mutation_table_add_row
+// @title Add a row to the mutations table in a table collection
+// @param tc an external pointer to table collection as a
+//   \code{tsk_table_collection_t} object.
+// @param site site id (0-based) the mutation belongs to.
+// @param node node id the mutation occurs over.
+// @param parent parent mutation id (or -1 for no parent).
+// @param time time of the mutation.
+// @param derived_state raw vector with derived state bytes
+//   (can be \code{NULL}).
+// @param metadata raw vector with metadata bytes
+//   (can be \code{NULL}).
+// @details This function calls
+//   \url{https://tskit.dev/tskit/docs/stable/c-api.html#c.tsk_mutation_table_add_row}
+//   on the mutations table of \code{tc}.
+// @return The 0-based row ID of the newly added mutation.
+// @examples
+// ts_file <- system.file("examples/test.trees", package = "RcppTskit")
+// tc_xptr <- RcppTskit:::rtsk_table_collection_load(ts_file)
+// n_before <- RcppTskit:::rtsk_table_collection_get_num_mutations(tc_xptr)
+// site_id <- RcppTskit:::rtsk_site_table_add_row(tc = tc_xptr, position = 1.0,
+//   ancestral_state = charToRaw("G"))
+// new_id <- RcppTskit:::rtsk_mutation_table_add_row(tc = tc_xptr,
+//   site = as.integer(site_id), node = 0L, parent = -1L, time = 0.0,
+//   derived_state = charToRaw("T"))
+// n_after <- RcppTskit:::rtsk_table_collection_get_num_mutations(tc_xptr)
+// new_id == as.integer(n_before) && n_after == n_before + 1L
+// [[Rcpp::export]]
+int rtsk_mutation_table_add_row(
+    const SEXP tc, const int site = 0, const int node = 0,
+    const int parent = -1, const double time = 0.0,
+    const Rcpp::Nullable<Rcpp::RawVector> derived_state = R_NilValue,
+    const Rcpp::Nullable<Rcpp::RawVector> metadata = R_NilValue) {
+  rtsk_table_collection_t tc_xptr(tc);
+
+  const tsk_id_t site_id = static_cast<tsk_id_t>(site);
+  const tsk_id_t node_id = static_cast<tsk_id_t>(node);
+  const tsk_id_t parent_id = static_cast<tsk_id_t>(parent);
+
+  const Rcpp::RawVector derived_vec =
+      nullable_to_vector_or_empty<Rcpp::RawVector>(derived_state);
+  const tsk_size_t derived_length = static_cast<tsk_size_t>(derived_vec.size());
+  const char *derived_ptr =
+      derived_length > 0 ? reinterpret_cast<const char *>(RAW(derived_vec))
+                         : nullptr;
+
+  const Rcpp::RawVector metadata_vec =
+      nullable_to_vector_or_empty<Rcpp::RawVector>(metadata);
+  const tsk_size_t metadata_length =
+      static_cast<tsk_size_t>(metadata_vec.size());
+  const char *metadata_ptr =
+      metadata_length > 0 ? reinterpret_cast<const char *>(RAW(metadata_vec))
+                          : nullptr;
+
+  const tsk_id_t row_id = tsk_mutation_table_add_row(
+      &tc_xptr->mutations, site_id, node_id, parent_id, time, derived_ptr,
+      derived_length, metadata_ptr, metadata_length);
+  if (row_id < 0) {
+    Rcpp::stop(tsk_strerror(row_id));
+  }
+  return static_cast<int>(row_id);
+}
