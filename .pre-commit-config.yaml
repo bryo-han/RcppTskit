@@ -45,12 +45,12 @@ repos:
         entry: clang-format -i --style=file
         language: system
         files: '\.(c|cc|cpp|cxx|h|hh|hpp|hxx)$'
-
-      - id: clang-tidy
-        name: clang-tidy for RcppTskit
-        entry: RcppTskit/tools/clang_tidy.py
-        language: system
-        files: '\.(c|cc|cpp|cxx|h|hh|hpp|hxx)$'
+## clang tidy is too inconsistent acros versions and platforms, and the effort to get it working is not worth it for now
+#      - id: clang-tidy
+#        name: clang-tidy for RcppTskit
+#        entry: RcppTskit/tools/clang_tidy.py
+#        language: system
+#        files: '\.(c|cc|cpp|cxx|h|hh|hpp|hxx)$'
 
       - id: check-sync-between-cpp-and-hpp
         name: check sync between cpp and hpp options and defaults
