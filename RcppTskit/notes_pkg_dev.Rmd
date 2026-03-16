@@ -93,8 +93,25 @@ PATCH version when you make backward compatible bug fixes
 ## Prepare for release
 
 ```
-use_upkeep_issue(year = NULL) # https://usethis.r-lib.org/reference/use_upkeep_issue.html
-use_release_issue(version = NULL) # https://usethis.r-lib.org/reference/use_release_issue.html
+
+setwd("ggs_path_to/RcppTskit/RcppTskit/RcppTskit")
+# yes, RcppTskit/RcppTskit/RcppTskit is correct! ;)
+getwd()
+dir()
+
+# https://usethis.r-lib.org/reference/use_upkeep_issue.html
+use_upkeep_issue(year = NULL)
+# ... this did not work for me
+usethis::with_project(".", usethis::use_upkeep_issue(year = NULL))
+# ... this did     work for me
+usethis::with_project(".", usethis::use_upkeep_issue(year = NULL), force=TRUE)
+
+# https://usethis.r-lib.org/reference/use_release_issue.html
+# ... this did not work for me
+usethis::with_project(".", usethis::use_release_issue("0.3.0"))
+# ... this did     work for me
+usethis::with_project(".", usethis::use_release_issue("0.3.0"), force=TRUE)
+
 # just follow tasks in there;)
 ```
 
@@ -149,36 +166,6 @@ To ignore specific lines, use `# nocov`
 To ignore multiple lines use `# nocov start/stop`.
 
 In `Rcpp` code use `// # nocov ...`.
-
-### Debugging C/C++
-
-In `src/Makevars.in` uncomment debug flags ...
-
-From terminal run:
-
-```
-# Go to package folder
-R_HOME="/Library/Frameworks/R.framework/Resources"
-R_BIN="$R_HOME/bin/exec/R"
-ASAN="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/lib/darwin/libclang_rt.asan_osx_dynamic.dylib"
-UBSAN="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/lib/darwin/libclang_rt.ubsan_osx_dynamic.dylib"
-
-env R_HOME="$R_HOME" \
-  DYLD_INSERT_LIBRARIES="$ASAN:$UBSAN" \
-  ASAN_OPTIONS="abort_on_error=1,detect_leaks=0,verbosity=1" \
-  UBSAN_OPTIONS="print_stacktrace=1" \
-  "$R_BIN" --vanilla
-```
-
-In the R session (not from Rstudio/Positron!):
-
-```
-# Load + compile into the current ASan session (no child R load)
-devtools::load_all()
-
-# Run tests in the same process
-devtools::test()
-```
 
 ### Air formatter of R code
 
@@ -247,6 +234,13 @@ pre-commit run clang-format --all-files
 
 https://clang.llvm.org/extra/clang-tidy/
 
+The repo uses two `clang-tidy` profiles:
+
+* `.clang-tidy`: stable low-noise pre-commit gate focused on correctness,
+  numerics, and a few performance checks.
+* `tools/clang_tidy_audit.yaml`: broader manual audit profile for occasional
+  sweeps; do not require this profile to be warning-free on every commit.
+
 ```
 echo $(brew --prefix llvm)/bin/clang-tidy
 # /opt/homebrew/opt/llvm/bin/clang-tidy
@@ -254,6 +248,7 @@ export CLANG_TIDY="$(brew --prefix llvm)/bin/clang-tidy"
 ./tools/clang_tidy.py src/RcppTskit.cpp
 ./RcppTskit/tools/clang_tidy.py RcppTskit/src/test_tsk_abort_stderr.cpp -- -system-headers '-header-filter=.*'   -extra-arg=-Wno-unknown-warning-option
 ./tools/clang_tidy.py src/test_tsk_abort_stderr.cpp -- -system-headers '-header-filter=.*'   -extra-arg=-Wno-unknown-warning-option
+./tools/clang_tidy.py src/RcppTskit.cpp -- --config-file=tools/clang_tidy_audit.yaml
 ```
 
 or
@@ -261,6 +256,36 @@ or
 ```
 pre-commit run clang-tidy src/RcppTskit.cpp
 pre-commit run clang-tidy --all-files
+```
+
+### Debugging C/C++
+
+In `src/Makevars.in` uncomment debug flags ...
+
+From terminal run:
+
+```
+# Go to package folder
+R_HOME="/Library/Frameworks/R.framework/Resources"
+R_BIN="$R_HOME/bin/exec/R"
+ASAN="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/lib/darwin/libclang_rt.asan_osx_dynamic.dylib"
+UBSAN="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/clang/17/lib/darwin/libclang_rt.ubsan_osx_dynamic.dylib"
+
+env R_HOME="$R_HOME" \
+  DYLD_INSERT_LIBRARIES="$ASAN:$UBSAN" \
+  ASAN_OPTIONS="abort_on_error=1,detect_leaks=0,verbosity=1" \
+  UBSAN_OPTIONS="print_stacktrace=1" \
+  "$R_BIN" --vanilla
+```
+
+In the R session (not from Rstudio/Positron!):
+
+```
+# Load + compile into the current ASan session (no child R load)
+devtools::load_all()
+
+# Run tests in the same process
+devtools::test()
 ```
 
 ### GitHub actions
