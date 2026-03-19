@@ -251,3 +251,11 @@ test_rtsk_individual_table_add_row_forced_error <- function(tc) {
     invisible(.Call(`_RcppTskit_test_rtsk_individual_table_add_row_forced_error`, tc))
 }
 
+test_rtsk_node_table_add_row_forced_error <- function(tc) {
+    invisible(.Call(`_RcppTskit_test_rtsk_node_table_add_row_forced_error`, tc))
+}
+
+test_rtsk_edge_table_add_row_forced_error <- function(tc) {
+    invisible(.Call(`_RcppTskit_test_rtsk_edge_table_add_row_forced_error`, tc))
+}
+

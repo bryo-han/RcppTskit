@@ -549,6 +549,10 @@ test_that("node_table_add_row wrapper expands the table collection and handles i
     tc$node_table_add_row(metadata = 1L),
     regexp = "metadata must be NULL, a raw vector, or a length-1 non-NA character string!"
   )
+  expect_error(
+    test_rtsk_node_table_add_row_forced_error(tc$xptr),
+    regexp = "TSK_ERR_TABLE_OVERFLOW"
+  )
 })
 
 test_that("edge_table_add_row wrapper expands the table collection and handles inputs", {
@@ -648,6 +652,16 @@ test_that("edge_table_add_row wrapper expands the table collection and handles i
       child = child
     ),
     regexp = "left must be finite in rtsk_edge_table_add_row"
+  )
+  expect_error(
+    rtsk_edge_table_add_row(
+      tc = tc_xptr,
+      left = 0,
+      right = Inf,
+      parent = parent,
+      child = child
+    ),
+    regexp = "right must be finite in rtsk_edge_table_add_row"
   )
   expect_error(
     rtsk_edge_table_add_row(
@@ -826,5 +840,9 @@ test_that("edge_table_add_row wrapper expands the table collection and handles i
       metadata = 1L
     ),
     regexp = "metadata must be NULL, a raw vector, or a length-1 non-NA character string!"
+  )
+  expect_error(
+    test_rtsk_edge_table_add_row_forced_error(tc$xptr),
+    regexp = "TSK_ERR_TABLE_OVERFLOW"
   )
 })

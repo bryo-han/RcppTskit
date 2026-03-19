@@ -669,6 +669,26 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// test_rtsk_node_table_add_row_forced_error
+void test_rtsk_node_table_add_row_forced_error(const SEXP tc);
+RcppExport SEXP _RcppTskit_test_rtsk_node_table_add_row_forced_error(SEXP tcSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const SEXP >::type tc(tcSEXP);
+    test_rtsk_node_table_add_row_forced_error(tc);
+    return R_NilValue;
+END_RCPP
+}
+// test_rtsk_edge_table_add_row_forced_error
+void test_rtsk_edge_table_add_row_forced_error(const SEXP tc);
+RcppExport SEXP _RcppTskit_test_rtsk_edge_table_add_row_forced_error(SEXP tcSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const SEXP >::type tc(tcSEXP);
+    test_rtsk_edge_table_add_row_forced_error(tc);
+    return R_NilValue;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_RcppTskit_test_validate_options", (DL_FUNC) &_RcppTskit_test_validate_options, 2},
@@ -730,6 +750,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_RcppTskit_test_rtsk_treeseq_init_forced_error", (DL_FUNC) &_RcppTskit_test_rtsk_treeseq_init_forced_error, 1},
     {"_RcppTskit_test_rtsk_table_collection_build_index_forced_error", (DL_FUNC) &_RcppTskit_test_rtsk_table_collection_build_index_forced_error, 1},
     {"_RcppTskit_test_rtsk_individual_table_add_row_forced_error", (DL_FUNC) &_RcppTskit_test_rtsk_individual_table_add_row_forced_error, 1},
+    {"_RcppTskit_test_rtsk_node_table_add_row_forced_error", (DL_FUNC) &_RcppTskit_test_rtsk_node_table_add_row_forced_error, 1},
+    {"_RcppTskit_test_rtsk_edge_table_add_row_forced_error", (DL_FUNC) &_RcppTskit_test_rtsk_edge_table_add_row_forced_error, 1},
     {NULL, NULL, 0}
 };
 

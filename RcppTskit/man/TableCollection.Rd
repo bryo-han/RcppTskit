@@ -633,7 +633,9 @@ a raw vector, or a character of length 1.}
 \subsection{Details}{
 See the \code{tskit Python} equivalent at
   \url{https://tskit.dev/tskit/docs/stable/python-api.html#tskit.NodeTable.add_row}.
-  The function casts inputs to the expected class.
+  The function casts inputs to the expected class. For convenience,
+  \code{population = NULL} and \code{individual = NULL} are mapped to
+  \code{-1} (\code{TSK_NULL}).
 }
 
 \subsection{Returns}{
@@ -708,7 +710,10 @@ a raw vector, or a character of length 1.}
 \subsection{Details}{
 See the \code{tskit Python} equivalent at
   \url{https://tskit.dev/tskit/docs/stable/python-api.html#tskit.EdgeTable.add_row}.
-  The function casts inputs to the expected class.
+  The function casts inputs to the expected class. Inputs are validated:
+  \code{left} and \code{right} must be finite numeric scalars with
+  \code{left < right}, and \code{parent} and \code{child} must be
+  non-\code{NA} integer scalars.
 }
 
 \subsection{Returns}{
