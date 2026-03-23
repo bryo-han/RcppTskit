@@ -149,3 +149,60 @@ void test_rtsk_individual_table_add_row_forced_error(const SEXP tc) {
     throw;
   }
 }
+
+// TEST-ONLY
+// @title Force tskit-level error path in \code{rtsk_node_table_add_row}
+// @param tc an external pointer to table collection as a
+//   \code{tsk_table_collection_t} object.
+// @return No return value; called for side effects - testing.
+// [[Rcpp::export]]
+void test_rtsk_node_table_add_row_forced_error(const SEXP tc) {
+  rtsk_table_collection_t tc_xptr(tc);
+  tsk_node_table_t &nodes = tc_xptr->nodes;
+  tsk_size_t saved_max_rows = nodes.max_rows;
+  tsk_size_t saved_max_rows_increment = nodes.max_rows_increment;
+  nodes.max_rows = 1;
+  nodes.max_rows_increment = static_cast<tsk_size_t>(TSK_MAX_ID) + 1;
+  try {
+    (void)rtsk_node_table_add_row(tc);
+    // Lines below not hit by tests because rtsk_node_table_add_row()
+    // throws error # nocov start
+    nodes.max_rows = saved_max_rows;
+    nodes.max_rows_increment = saved_max_rows_increment;
+    return;
+    // # nocov end
+  } catch (...) {
+    nodes.max_rows = saved_max_rows;
+    nodes.max_rows_increment = saved_max_rows_increment;
+    throw;
+  }
+}
+
+// TEST-ONLY
+// @title Force tskit-level error path in \code{rtsk_edge_table_add_row}
+// @param tc an external pointer to table collection as a
+//   \code{tsk_table_collection_t} object.
+// @return No return value; called for side effects - testing.
+// [[Rcpp::export]]
+void test_rtsk_edge_table_add_row_forced_error(const SEXP tc) {
+  rtsk_table_collection_t tc_xptr(tc);
+  tsk_edge_table_t &edges = tc_xptr->edges;
+  tsk_size_t saved_max_rows = edges.max_rows;
+  tsk_size_t saved_max_rows_increment = edges.max_rows_increment;
+  edges.max_rows = 1;
+  edges.max_rows_increment = static_cast<tsk_size_t>(TSK_MAX_ID) + 1;
+  try {
+    (void)rtsk_edge_table_add_row(tc, 0, 1, static_cast<int>(edges.parent[0]),
+                                  static_cast<int>(edges.child[0]), R_NilValue);
+    // Lines below not hit by tests because rtsk_edge_table_add_row()
+    // throws error # nocov start
+    edges.max_rows = saved_max_rows;
+    edges.max_rows_increment = saved_max_rows_increment;
+    return;
+    // # nocov end
+  } catch (...) {
+    edges.max_rows = saved_max_rows;
+    edges.max_rows_increment = saved_max_rows_increment;
+    throw;
+  }
+}

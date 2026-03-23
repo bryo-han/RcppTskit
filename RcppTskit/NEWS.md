@@ -31,6 +31,10 @@ and releases adhere to [Semantic Versioning](https://semver.org/spec/v2.0.0.html
 - Added `rtsk_individual_table_add_row()` and
   `TableCollection$individual_table_add_row()` to append individual rows from
   \code{R}, mirroring `tsk_individual_table_add_row()`.
+- Added `rtsk_node_table_add_row()` and `TableCollection$node_table_add_row()`
+  to append node rows from \code{R}, mirroring `tsk_node_table_add_row()`.
+- Added `rtsk_edge_table_add_row()` and `TableCollection$edge_table_add_row()`
+  to append edge rows from \code{R}, mirroring `tsk_edge_table_add_row()`.
 - TODO
 
 ### Changed
