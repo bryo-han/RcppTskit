@@ -510,6 +510,14 @@ test_that("node_table_add_row wrapper expands the table collection and handles i
   )
 
   expect_error(
+    tc$node_table_add_row(flags = -1L),
+    regexp = "flags must be a non-NA zero or positive integer scalar!"
+  )
+  expect_error(
+    tc$node_table_add_row(time = NA_real_),
+    regexp = "time must be a non-NA numeric scalar!"
+  )
+  expect_error(
     tc$node_table_add_row(population = NA_integer_),
     regexp = "population must be -1L, NULL, or a non-NA integer scalar!"
   )
