@@ -279,7 +279,6 @@ For example, the above `R` function `ts_load()` effectively calls:
 ```{r}
 #| label: use_case_1_dev_funcs
 # Low-level R function, which further calls the C++ function
-
 # jarl-ignore internal_function: exposing for demo/doc
 RcppTskit:::rtsk_treeseq_load
 
